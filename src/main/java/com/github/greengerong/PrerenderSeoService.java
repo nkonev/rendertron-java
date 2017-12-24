@@ -92,7 +92,7 @@ public class PrerenderSeoService {
 
     private boolean shouldShowPrerenderedPage(HttpServletRequest request) throws URISyntaxException {
         final String userAgent = request.getHeader("User-Agent");
-        String url = getFullUrl(request);
+        final String url = getRequestURL(request);
         final String referer = request.getHeader("Referer");
 
         log.trace(String.format("checking request for %s from User-Agent %s and referer %s", url, userAgent, referer));
@@ -179,12 +179,20 @@ public class PrerenderSeoService {
     }
 
     private String getRequestURL(HttpServletRequest request) {
+        if (prerenderConfig.getForwardedURLPrefixHeader() != null) {
+            String url = request.getHeader(prerenderConfig.getForwardedURLPrefixHeader());
+            if (url != null) {
+                return url + request.getRequestURI();
+            }
+        }
+
         if (prerenderConfig.getForwardedURLHeader() != null) {
             String url = request.getHeader(prerenderConfig.getForwardedURLHeader());
             if (url != null) {
                 return url;
             }
         }
+
         return request.getRequestURL().toString();
     }
 

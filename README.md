@@ -40,7 +40,7 @@ Use this java filter that prerenders a javascript-rendered page using an externa
     <dependency>
       <groupId>com.github.nkonev</groupId>
       <artifactId>prerender-java</artifactId>
-      <version>1.6.5</version>
+      <version>1.6.6</version>
     </dependency>
 
 ## How it works

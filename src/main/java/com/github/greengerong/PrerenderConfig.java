@@ -80,6 +80,10 @@ public class PrerenderConfig {
         return config.get("forwardedURLHeader");
     }
 
+    public String getForwardedURLPrefixHeader() {
+        return config.get("forwardedURLPrefixHeader");
+    }
+
     public List<String> getCrawlerUserAgents() {
         List<String> crawlerUserAgents = Lists.newArrayList("baiduspider",
                 "facebookexternalhit", "twitterbot", "rogerbot", "linkedinbot", "embedly", "quora link preview",
