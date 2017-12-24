@@ -24,12 +24,23 @@ Use this java filter that prerenders a javascript-rendered page using an externa
           <url-pattern>/*</url-pattern>
       </filter-mapping>
 
-2:add dependency on your project pom:
+2:add repo & dependency on your project pom:
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-nkonev-m2</id>
+            <name>bintray</name>
+            <url>https://dl.bintray.com/nkonev/m2</url>
+        </repository>
+    </repositories>
 
     <dependency>
-      <groupId>com.github.greengerong</groupId>
+      <groupId>com.github.nkonev</groupId>
       <artifactId>prerender-java</artifactId>
-      <version>1.6.4</version>
+      <version>1.6.5</version>
     </dependency>
 
 ## How it works
