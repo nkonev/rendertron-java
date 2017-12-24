@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class PreRenderSEOFilter implements Filter {
     public static final List<String> PARAMETER_NAMES = Lists.newArrayList("preRenderEventHandler", "proxy", "proxyPort",
-            "prerenderToken", "forwardedURLHeader", "forwardedURLPrefixHeader", "crawlerUserAgents", "extensionsToIgnore", "whitelist",
+            "prerenderToken", "forwardedURLHeader", "forwardedURLPrefixHeader", "forwardedURLPrefix", "crawlerUserAgents", "extensionsToIgnore", "whitelist",
             "blacklist", "prerenderServiceUrl");
     private PrerenderSeoService prerenderSeoService;
 

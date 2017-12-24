@@ -179,6 +179,13 @@ public class PrerenderSeoService {
     }
 
     private String getRequestURL(HttpServletRequest request) {
+        if (prerenderConfig.getForwardedURLPrefix() != null) {
+            String url = prerenderConfig.getForwardedURLPrefix();
+            if (url != null) {
+                return url + request.getRequestURI();
+            }
+        }
+
         if (prerenderConfig.getForwardedURLPrefixHeader() != null) {
             String url = request.getHeader(prerenderConfig.getForwardedURLPrefixHeader());
             if (url != null) {
