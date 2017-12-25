@@ -28,7 +28,7 @@ public class PrerenderConfig {
     }
 
     public PreRenderEventHandler getEventHandler() {
-        final String preRenderEventHandler = config.get("preRenderEventHandler");
+        final String preRenderEventHandler = config.get(PreRenderConstants.InitFilterParams.PRE_RENDER_EVENT_HANDLER);
         if (isNotBlank(preRenderEventHandler)) {
             try {
                 return (PreRenderEventHandler) Class.forName(preRenderEventHandler).newInstance();
@@ -50,9 +50,9 @@ public class PrerenderConfig {
     }
 
     private HttpClientBuilder configureProxy(HttpClientBuilder builder) {
-        final String proxy = config.get("proxy");
+        final String proxy = config.get(PreRenderConstants.InitFilterParams.PROXY);
         if (isNotBlank(proxy)) {
-            final int proxyPort = Integer.parseInt(config.get("proxyPort"));
+            final int proxyPort = Integer.parseInt(config.get(PreRenderConstants.InitFilterParams.PROXY_PORT));
             DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(new HttpHost(proxy, proxyPort));
             builder.setRoutePlanner(routePlanner);
         }
@@ -73,15 +73,15 @@ public class PrerenderConfig {
     }
 
     public String getPrerenderToken() {
-        return config.get("prerenderToken");
+        return config.get(PreRenderConstants.InitFilterParams.PRERENDER_TOKEN);
     }
 
     public String getForwardedURLHeader() {
-        return config.get("forwardedURLHeader");
+        return config.get(PreRenderConstants.InitFilterParams.FORWARDED_URL_HEADER);
     }
 
     public String getForwardedURLPrefixHeader() {
-        return config.get("forwardedURLPrefixHeader");
+        return config.get(PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX_HEADER);
     }
 
     public List<String> getCrawlerUserAgents() {
@@ -89,7 +89,7 @@ public class PrerenderConfig {
                 "facebookexternalhit", "twitterbot", "rogerbot", "linkedinbot", "embedly", "quora link preview",
                 "showyoubo", "outbrain", "pinterest", "developers.google.com/+/web/snippet", "slackbot", "vkShare",
                 "W3C_Validator", "redditbot", "Applebot", "yandex", "Googlebot");
-        final String crawlerUserAgentsFromConfig = config.get("crawlerUserAgents");
+        final String crawlerUserAgentsFromConfig = config.get(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS);
         if (isNotBlank(crawlerUserAgentsFromConfig)) {
             crawlerUserAgents.addAll(Arrays.asList(crawlerUserAgentsFromConfig.trim().split(",")));
         }
@@ -102,7 +102,7 @@ public class PrerenderConfig {
                 ".jpeg", ".gif", ".pdf", ".doc", ".txt", ".ico", ".rss", ".zip", ".mp3", ".rar", ".exe", ".wmv",
                 ".doc", ".avi", ".ppt", ".mpg", ".mpeg", ".tif", ".wav", ".mov", ".psd", ".ai", ".xls", ".mp4",
                 ".m4a", ".swf", ".dat", ".dmg", ".iso", ".flv", ".m4v", ".torrent", ".woff", ".ttf");
-        final String extensionsToIgnoreFromConfig = config.get("extensionsToIgnore");
+        final String extensionsToIgnoreFromConfig = config.get(PreRenderConstants.InitFilterParams.EXTENSIONS_TO_IGNORE);
         if (isNotBlank(extensionsToIgnoreFromConfig)) {
             extensionsToIgnore.addAll(Arrays.asList(extensionsToIgnoreFromConfig.trim().split(",")));
         }
@@ -111,7 +111,7 @@ public class PrerenderConfig {
     }
 
     public List<String> getWhitelist() {
-        final String whitelist = config.get("whitelist");
+        final String whitelist = config.get(PreRenderConstants.InitFilterParams.WHITELIST);
         if (isNotBlank(whitelist)) {
             return Arrays.asList(whitelist.trim().split(","));
         }
@@ -119,7 +119,7 @@ public class PrerenderConfig {
     }
 
     public List<String> getBlacklist() {
-        final String blacklist = config.get("blacklist");
+        final String blacklist = config.get(PreRenderConstants.InitFilterParams.BLACKLIST);
         if (isNotBlank(blacklist)) {
             return Arrays.asList(blacklist.trim().split(","));
         }
@@ -127,16 +127,16 @@ public class PrerenderConfig {
     }
 
     public String getPrerenderServiceUrl() {
-        final String prerenderServiceUrl = config.get("prerenderServiceUrl");
+        final String prerenderServiceUrl = config.get(PreRenderConstants.InitFilterParams.PRERENDER_SERVICE_URL);
         return isNotBlank(prerenderServiceUrl) ? prerenderServiceUrl : getDefaultPrerenderIoServiceUrl();
     }
 
     private String getDefaultPrerenderIoServiceUrl() {
-        final String prerenderServiceUrlInEnv = System.getProperty("PRERENDER_SERVICE_URL");
+        final String prerenderServiceUrlInEnv = System.getProperty(PreRenderConstants.SystemParams.PRERENDER_SERVICE_URL);
         return isNotBlank(prerenderServiceUrlInEnv) ? prerenderServiceUrlInEnv : PRERENDER_IO_SERVICE_URL;
     }
 
     public String getForwardedURLPrefix() {
-        return config.get("forwardedURLPrefix");
+        return config.get(PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX);
     }
 }

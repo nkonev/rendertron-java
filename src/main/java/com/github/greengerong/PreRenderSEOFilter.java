@@ -7,14 +7,18 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PreRenderSEOFilter implements Filter {
-    public static final List<String> PARAMETER_NAMES = Lists.newArrayList("preRenderEventHandler", "proxy", "proxyPort",
-            "prerenderToken", "forwardedURLHeader", "forwardedURLPrefixHeader", "forwardedURLPrefix", "crawlerUserAgents", "extensionsToIgnore", "whitelist",
-            "blacklist", "prerenderServiceUrl");
+    public static final List<String> PARAMETER_NAMES = Lists.newArrayList(
+            PreRenderConstants.InitFilterParams.PRE_RENDER_EVENT_HANDLER, PreRenderConstants.InitFilterParams.PROXY,
+            PreRenderConstants.InitFilterParams.PROXY_PORT, PreRenderConstants.InitFilterParams.PRERENDER_TOKEN,
+            PreRenderConstants.InitFilterParams.FORWARDED_URL_HEADER, PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX_HEADER,
+            PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX, PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS,
+            PreRenderConstants.InitFilterParams.EXTENSIONS_TO_IGNORE, PreRenderConstants.InitFilterParams.WHITELIST,
+            PreRenderConstants.InitFilterParams.BLACKLIST, PreRenderConstants.InitFilterParams.PRERENDER_SERVICE_URL
+    );
     private PrerenderSeoService prerenderSeoService;
 
     @Override
