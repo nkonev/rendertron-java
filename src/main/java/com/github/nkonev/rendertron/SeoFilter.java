@@ -12,7 +12,7 @@ import java.util.Map;
 public class SeoFilter implements Filter {
     public static final List<String> PARAMETER_NAMES = Arrays.asList(
             Constants.InitFilterParams.RENDERTRON_EVENT_HANDLER, Constants.InitFilterParams.PROXY,
-            Constants.InitFilterParams.PROXY_PORT, Constants.InitFilterParams.PRERENDER_TOKEN,
+            Constants.InitFilterParams.PROXY_PORT,
             Constants.InitFilterParams.FORWARDED_URL_HEADER, Constants.InitFilterParams.FORWARDED_URL_PREFIX_HEADER,
             Constants.InitFilterParams.FORWARDED_URL_PREFIX, Constants.InitFilterParams.CRAWLER_USER_AGENTS,
             Constants.InitFilterParams.EXTENSIONS_TO_IGNORE, Constants.InitFilterParams.WHITELIST,

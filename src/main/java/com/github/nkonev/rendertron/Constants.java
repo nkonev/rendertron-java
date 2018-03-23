@@ -6,7 +6,6 @@ public class Constants {
         public static final String RENDERTRON_EVENT_HANDLER = "eventHandler";
         public static final String PROXY = "proxy";
         public static final String PROXY_PORT = "proxyPort";
-        public static final String PRERENDER_TOKEN = "prerenderToken";
         public static final String FORWARDED_URL_HEADER = "forwardedURLHeader";
         public static final String FORWARDED_URL_PREFIX_HEADER = "forwardedURLPrefixHeader";
         public static final String FORWARDED_URL_PREFIX = "forwardedURLPrefix";

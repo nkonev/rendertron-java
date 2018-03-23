@@ -69,10 +69,6 @@ public class Config {
         return config.get("socketTimeout");
     }
 
-    public String getToken() {
-        return config.get(Constants.InitFilterParams.PRERENDER_TOKEN);
-    }
-
     public String getForwardedURLHeader() {
         return config.get(Constants.InitFilterParams.FORWARDED_URL_HEADER);
     }

@@ -338,7 +338,6 @@ public class SeoService {
         log.trace(String.format("Render proxy will send request to:%s", apiUrl));
         final HttpGet getMethod = getHttpGet(apiUrl);
         copyRequestHeaders(request, getMethod);
-        withPrerenderToken(getMethod);
         CloseableHttpResponse prerenderServerResponse = null;
 
         try {
@@ -359,14 +358,6 @@ public class SeoService {
             return eventHandler.afterRender(clientRequest, clientResponse, prerenderServerResponse, responseHtml);
         }
         return responseHtml;
-    }
-
-    private void withPrerenderToken(HttpRequest proxyRequest) {
-        final String token = config.getToken();
-        //for new version prerender with token.
-        if (isNotBlank(token)) {
-            proxyRequest.addHeader("X-Prerender-Token", token);
-        }
     }
 
     private String getFullUrl(HttpServletRequest request) {
