@@ -1,4 +1,4 @@
-package com.github.greengerong;
+package com.github.nkonev.rendertron;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;

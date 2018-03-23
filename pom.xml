@@ -2,26 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.nkonev</groupId>
-    <artifactId>prerender-java</artifactId>
-    <version>1.6.10</version>
+    <artifactId>rendertron-java</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>prerender-java</name>
     <url>http://maven.apache.org</url>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-
-    </licenses>
-    <scm>
-        <connection>scm:git:git@github.com:greengerong/prerender-java.git</connection>
-        <developerConnection>scm:git:git@github.com:greengerong/prerender-java.git</developerConnection>
-        <url>git@github.com:greengerong/prerender-java.git</url>
-    </scm>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -32,7 +19,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
-        <guava.version>15.0</guava.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-io.version>2.4</commons-io.version>
         <servlet-api.version>2.5</servlet-api.version>

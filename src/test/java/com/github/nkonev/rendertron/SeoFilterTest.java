@@ -1,4 +1,4 @@
-package com.github.greengerong;
+package com.github.nkonev.rendertron;
 
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
-import static com.github.greengerong.SeoService.ESCAPED_FRAGMENT_KEY;
+
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.client.methods.HttpGet.METHOD_NAME;
@@ -102,7 +102,7 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(ESCAPED_FRAGMENT_KEY, "");
+        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
@@ -207,7 +207,7 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(ESCAPED_FRAGMENT_KEY, "");
+        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
@@ -238,7 +238,7 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(ESCAPED_FRAGMENT_KEY, "");
+        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_NOT_FOUND);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
@@ -276,7 +276,7 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(ESCAPED_FRAGMENT_KEY, "");
+        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
@@ -310,7 +310,7 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(ESCAPED_FRAGMENT_KEY, "");
+        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
