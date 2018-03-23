@@ -13,7 +13,7 @@ Use this java filter that prerenders a javascript-rendered page using an externa
 
     <filter>
           <filter-name>prerender</filter-name>
-          <filter-class>com.github.greengerong.PreRenderSEOFilter</filter-class>
+          <filter-class>com.github.greengerong.SeoFilter</filter-class>
           <init-param>
               <param-name>prerenderToken</param-name>
               <param-value>[get from prerender: https://prerender.io/]</param-value>
@@ -93,7 +93,7 @@ If you want to use token with the prerender service, you can config it.
 
 ### prerender event handler
 
-If you want to cache the caching, analytics, log or others, you can config it. It should be instance of "com.github.greengerong.PreRenderEventHandler"
+If you want to cache the caching, analytics, log or others, you can config it. It should be instance of "com.github.greengerong.EventHandler"
 
 
 ``` xml

@@ -9,26 +9,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PreRenderSEOFilter implements Filter {
+public class SeoFilter implements Filter {
     public static final List<String> PARAMETER_NAMES = Arrays.asList(
-            PreRenderConstants.InitFilterParams.PRE_RENDER_EVENT_HANDLER, PreRenderConstants.InitFilterParams.PROXY,
-            PreRenderConstants.InitFilterParams.PROXY_PORT, PreRenderConstants.InitFilterParams.PRERENDER_TOKEN,
-            PreRenderConstants.InitFilterParams.FORWARDED_URL_HEADER, PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX_HEADER,
-            PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX, PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS,
-            PreRenderConstants.InitFilterParams.EXTENSIONS_TO_IGNORE, PreRenderConstants.InitFilterParams.WHITELIST,
-            PreRenderConstants.InitFilterParams.BLACKLIST, PreRenderConstants.InitFilterParams.PRERENDER_SERVICE_URL
+            Constants.InitFilterParams.RENDERTRON_EVENT_HANDLER, Constants.InitFilterParams.PROXY,
+            Constants.InitFilterParams.PROXY_PORT, Constants.InitFilterParams.PRERENDER_TOKEN,
+            Constants.InitFilterParams.FORWARDED_URL_HEADER, Constants.InitFilterParams.FORWARDED_URL_PREFIX_HEADER,
+            Constants.InitFilterParams.FORWARDED_URL_PREFIX, Constants.InitFilterParams.CRAWLER_USER_AGENTS,
+            Constants.InitFilterParams.EXTENSIONS_TO_IGNORE, Constants.InitFilterParams.WHITELIST,
+            Constants.InitFilterParams.BLACKLIST, Constants.InitFilterParams.RENDERTRON_SERVICE_URL
     );
-    private PrerenderSeoService prerenderSeoService;
+    private SeoService seoService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.prerenderSeoService = new PrerenderSeoService(toMap(filterConfig));
+        this.seoService = new SeoService(toMap(filterConfig));
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        boolean isPrerendered = prerenderSeoService.prerenderIfEligible(
+        boolean isPrerendered = seoService.prerenderIfEligible(
                 (HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
         if (!isPrerendered) {
             filterChain.doFilter(servletRequest, servletResponse);
@@ -37,11 +37,11 @@ public class PreRenderSEOFilter implements Filter {
 
     @Override
     public void destroy() {
-        prerenderSeoService.destroy();
+        seoService.destroy();
     }
 
-    protected void setPrerenderSeoService(PrerenderSeoService prerenderSeoService) {
-        this.prerenderSeoService = prerenderSeoService;
+    protected void setSeoService(SeoService seoService) {
+        this.seoService = seoService;
     }
 
     protected Map<String, String> toMap(FilterConfig filterConfig) {

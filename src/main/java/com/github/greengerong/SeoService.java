@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,8 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.http.HttpHeaders.HOST;
 
-public class PrerenderSeoService {
-    private final static Logger log = LoggerFactory.getLogger(PrerenderSeoService.class);
+public class SeoService {
+    private final static Logger log = LoggerFactory.getLogger(SeoService.class);
     /**
      * These are the "hop-by-hop" headers that should not be copied.
      * http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html
@@ -38,11 +37,11 @@ public class PrerenderSeoService {
     private static final HeaderGroup hopByHopHeaders;
     public static final String ESCAPED_FRAGMENT_KEY = "_escaped_fragment_";
     private CloseableHttpClient httpClient;
-    private PrerenderConfig prerenderConfig;
-    private PreRenderEventHandler preRenderEventHandler;
+    private Config config;
+    private EventHandler eventHandler;
 
-    public PrerenderSeoService(Map<String, String> config) {
-        this.prerenderConfig = new PrerenderConfig(config);
+    public SeoService(Map<String, String> config) {
+        this.config = new Config(config);
         this.httpClient = getHttpClient();
     }
 
@@ -57,8 +56,8 @@ public class PrerenderSeoService {
     }
 
     public void destroy() {
-        if (preRenderEventHandler != null) {
-            preRenderEventHandler.destroy();
+        if (eventHandler != null) {
+            eventHandler.destroy();
         }
         closeQuietly(httpClient);
     }
@@ -77,7 +76,7 @@ public class PrerenderSeoService {
     private boolean handlePrerender(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws URISyntaxException, IOException {
         if (shouldShowPrerenderedPage(servletRequest)) {
-            this.preRenderEventHandler = prerenderConfig.getEventHandler();
+            this.eventHandler = config.getEventHandler();
             if (beforeRender(servletRequest, servletResponse) || proxyPrerenderedPageResponse(servletRequest, servletResponse)) {
                 return true;
             }
@@ -102,13 +101,13 @@ public class PrerenderSeoService {
             return false;
         }
 
-        final List<String> whiteList = prerenderConfig.getWhitelist();
+        final List<String> whiteList = config.getWhitelist();
         if (whiteList != null && !isInWhiteList(url, whiteList)) {
             log.trace("Whitelist is enabled, but this request is not listed; intercept: no");
             return false;
         }
 
-        final List<String> blacklist = prerenderConfig.getBlacklist();
+        final List<String> blacklist = config.getBlacklist();
         if (blacklist != null && isInBlackList(url, referer, blacklist)) {
             log.trace("Blacklist is enabled, and this request is listed; intercept: no");
             return false;
@@ -138,7 +137,7 @@ public class PrerenderSeoService {
     }
 
     protected CloseableHttpClient getHttpClient() {
-        return prerenderConfig.getHttpClient();
+        return config.getHttpClient();
     }
 
     /**
@@ -161,7 +160,7 @@ public class PrerenderSeoService {
                     // rewrite the Host header to ensure that we get content from
                     // the correct virtual server
                     if (headerName.equalsIgnoreCase(HOST)) {
-                        HttpHost host = URIUtils.extractHost(new URI(prerenderConfig.getPrerenderServiceUrl()));
+                        HttpHost host = URIUtils.extractHost(new URI(config.getPrerenderServiceUrl()));
                         headerValue = host.getHostName();
                         if (host.getPort() != -1) {
                             headerValue += ":" + host.getPort();
@@ -175,22 +174,22 @@ public class PrerenderSeoService {
 
     private String getRequestURL(HttpServletRequest request) {
 
-        if (prerenderConfig.getForwardedURLPrefixHeader() != null) {
-            String url = request.getHeader(prerenderConfig.getForwardedURLPrefixHeader());
+        if (config.getForwardedURLPrefixHeader() != null) {
+            String url = request.getHeader(config.getForwardedURLPrefixHeader());
             if (url != null) {
                 return url + request.getRequestURI();
             }
         }
 
-        if (prerenderConfig.getForwardedURLHeader() != null) {
-            String url = request.getHeader(prerenderConfig.getForwardedURLHeader());
+        if (config.getForwardedURLHeader() != null) {
+            String url = request.getHeader(config.getForwardedURLHeader());
             if (url != null) {
                 return url;
             }
         }
 
-        if (prerenderConfig.getForwardedURLPrefix() != null) {
-            String url = prerenderConfig.getForwardedURLPrefix();
+        if (config.getForwardedURLPrefix() != null) {
+            String url = config.getForwardedURLPrefix();
             if (url != null) {
                 return url + request.getRequestURI();
             }
@@ -200,7 +199,7 @@ public class PrerenderSeoService {
     }
 
     private String getApiUrl(String url) {
-        String prerenderServiceUrl = prerenderConfig.getPrerenderServiceUrl();
+        String prerenderServiceUrl = config.getPrerenderServiceUrl();
         if (!prerenderServiceUrl.endsWith("/")) {
             prerenderServiceUrl += "/";
         }
@@ -290,7 +289,7 @@ public class PrerenderSeoService {
     }
 
     private boolean isInSearchUserAgent(final String userAgent) {
-        for(String item: prerenderConfig.getCrawlerUserAgents()){
+        for(String item: config.getCrawlerUserAgents()){
             if (userAgent.toLowerCase().contains(item.toLowerCase())){
                 return true;
             }
@@ -300,7 +299,7 @@ public class PrerenderSeoService {
 
 
     private boolean isInResources(final String url) {
-        for(String item: prerenderConfig.getExtensionsToIgnore()){
+        for(String item: config.getExtensionsToIgnore()){
             if ((url.indexOf('?') >= 0 ? url.substring(0, url.indexOf('?')) : url)
                     .toLowerCase().endsWith(item)){
                 return true;
@@ -319,8 +318,8 @@ public class PrerenderSeoService {
     }
 
     private boolean beforeRender(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (preRenderEventHandler != null) {
-            final String html = preRenderEventHandler.beforeRender(request);
+        if (eventHandler != null) {
+            final String html = eventHandler.beforeRender(request);
             if (isNotBlank(html)) {
                 final PrintWriter writer = response.getWriter();
                 writer.write(html);
@@ -355,14 +354,14 @@ public class PrerenderSeoService {
     }
 
     private String afterRender(HttpServletRequest clientRequest, HttpServletResponse clientResponse, CloseableHttpResponse prerenderServerResponse, String responseHtml) {
-        if (preRenderEventHandler != null) {
-            return preRenderEventHandler.afterRender(clientRequest, clientResponse, prerenderServerResponse, responseHtml);
+        if (eventHandler != null) {
+            return eventHandler.afterRender(clientRequest, clientResponse, prerenderServerResponse, responseHtml);
         }
         return responseHtml;
     }
 
     private void withPrerenderToken(HttpRequest proxyRequest) {
-        final String token = prerenderConfig.getPrerenderToken();
+        final String token = config.getPrerenderToken();
         //for new version prerender with token.
         if (isNotBlank(token)) {
             proxyRequest.addHeader("X-Prerender-Token", token);

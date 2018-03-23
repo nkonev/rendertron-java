@@ -19,16 +19,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
-import static com.github.greengerong.PrerenderSeoService.ESCAPED_FRAGMENT_KEY;
+import static com.github.greengerong.SeoService.ESCAPED_FRAGMENT_KEY;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.client.methods.HttpGet.METHOD_NAME;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PreRenderSEOFilterTest {
+public class SeoFilterTest {
 
-    private PreRenderSEOFilter preRenderSEOFilter;
+    private SeoFilter seoFilter;
 
     @Mock
     private CloseableHttpClient httpClient;
@@ -47,15 +47,18 @@ public class PreRenderSEOFilterTest {
 
     @Mock
     private HttpGet httpGet;
+
     @Mock
     private PrintWriter printWriter;
 
+    private static final String DEFAULT_RENDERTRON_URL = "http://service.prerender.io/";
+
     @Before
     public void setUp() throws Exception {
-        preRenderSEOFilter = new PreRenderSEOFilter() {
+        seoFilter = new SeoFilter() {
             @Override
             public void init(FilterConfig filterConfig) throws ServletException {
-                setPrerenderSeoService(new PrerenderSeoService(toMap(filterConfig)) {
+                setSeoService(new SeoService(toMap(filterConfig)) {
                     @Override
                     protected CloseableHttpClient getHttpClient() {
                         return httpClient;
@@ -73,12 +76,12 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_not_handle_when_non_get_request() throws Exception {
         //given
-        preRenderSEOFilter.init(filterConfig);
+        seoFilter.init(filterConfig);
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer());
         when(servletRequest.getMethod()).thenReturn(HttpPost.METHOD_NAME);
 
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient, never()).execute(httpGet);
@@ -88,7 +91,8 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_handle_when_url_with_escaped_fragment_() throws Exception {
         //given
-        preRenderSEOFilter.init(filterConfig);
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL)).thenReturn(DEFAULT_RENDERTRON_URL);
+        seoFilter.init(filterConfig);
         final CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
         final StatusLine statusLine = mock(StatusLine.class);
 
@@ -105,7 +109,7 @@ public class PreRenderSEOFilterTest {
         when(servletResponse.getWriter()).thenReturn(printWriter);
 
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient).execute(httpGet);
@@ -115,14 +119,14 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_not_handle_when_user_agent_is_not_crawler() throws Exception {
         //given
-        preRenderSEOFilter.init(filterConfig);
+        seoFilter.init(filterConfig);
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
         when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("no");
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient, never()).execute(httpGet);
@@ -132,15 +136,15 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_not_handle_when_url_is_a_resource() throws Exception {
         //given
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
-        preRenderSEOFilter.init(filterConfig);
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
+        seoFilter.init(filterConfig);
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test.js"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
         when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("crawler1");
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient, never()).execute(httpGet);
@@ -150,16 +154,16 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_not_handle_when_white_list_is_not_empty_and_url_is_not_in_white_list() throws Exception {
         //given
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.WHITELIST)).thenReturn("whitelist1,whitelist2");
-        preRenderSEOFilter.init(filterConfig);
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.WHITELIST)).thenReturn("whitelist1,whitelist2");
+        seoFilter.init(filterConfig);
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
         when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("crawler1");
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient, never()).execute(httpGet);
@@ -169,16 +173,16 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_not_handle_when_black_list_is_not_empty_and_url_is_in_black_list() throws Exception {
         //given
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.BLACKLIST)).thenReturn("blacklist1,http://localhost/test");
-        preRenderSEOFilter.init(filterConfig);
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.BLACKLIST)).thenReturn("blacklist1,http://localhost/test");
+        seoFilter.init(filterConfig);
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
         when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("crawler1");
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient, never()).execute(httpGet);
@@ -188,8 +192,9 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_handle_when_user_agent_is_crawler_and_url_is_not_resource_and_white_list_is_empty_and_black_list_is_empty() throws Exception {
         //given
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
-        preRenderSEOFilter.init(filterConfig);
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL)).thenReturn(DEFAULT_RENDERTRON_URL);
+        seoFilter.init(filterConfig);
 
         final CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
         final StatusLine statusLine = mock(StatusLine.class);
@@ -208,7 +213,7 @@ public class PreRenderSEOFilterTest {
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
         when(servletResponse.getWriter()).thenReturn(printWriter);
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient).execute(httpGet);
@@ -218,8 +223,9 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_handle_when_every_thing_is_ok_but_prerender_server_response_is_not_200() throws Exception {
         //given
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
-        preRenderSEOFilter.init(filterConfig);
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL)).thenReturn(DEFAULT_RENDERTRON_URL);
+        seoFilter.init(filterConfig);
 
         final CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
         final StatusLine statusLine = mock(StatusLine.class);
@@ -240,7 +246,7 @@ public class PreRenderSEOFilterTest {
 
 
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient).execute(httpGet);
@@ -252,11 +258,12 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_handle_when_user_agent_is_crawler_and_url_is_not_resource_and_in_white_list_and_not_in_black_list() throws Exception {
         //given
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.WHITELIST)).thenReturn("whitelist1,http://localhost/test");
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.BLACKLIST)).thenReturn("blacklist1,blacklist2");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.WHITELIST)).thenReturn("whitelist1,http://localhost/test");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.BLACKLIST)).thenReturn("blacklist1,blacklist2");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL)).thenReturn(DEFAULT_RENDERTRON_URL);
 
-        preRenderSEOFilter.init(filterConfig);
+        seoFilter.init(filterConfig);
 
         final CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
         final StatusLine statusLine = mock(StatusLine.class);
@@ -276,7 +283,7 @@ public class PreRenderSEOFilterTest {
         when(servletResponse.getWriter()).thenReturn(printWriter);
 
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient).execute(httpGet);
@@ -286,11 +293,11 @@ public class PreRenderSEOFilterTest {
     @Test
     public void should_use_request_url_from_custom_header_if_available() throws Exception {
         //given
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.FORWARDED_URL_HEADER)).thenReturn("X-Forwarded-URL");
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.WHITELIST)).thenReturn("http://my.public.domain.com/");
-        when(filterConfig.getInitParameter(PreRenderConstants.InitFilterParams.BLACKLIST)).thenReturn("http://localhost/test");
-
-        preRenderSEOFilter.init(filterConfig);
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.FORWARDED_URL_HEADER)).thenReturn("X-Forwarded-URL");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.WHITELIST)).thenReturn("http://my.public.domain.com/");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.BLACKLIST)).thenReturn("http://localhost/test");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL)).thenReturn(DEFAULT_RENDERTRON_URL);
+        seoFilter.init(filterConfig);
 
         final CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
         final StatusLine statusLine = mock(StatusLine.class);
@@ -310,7 +317,7 @@ public class PreRenderSEOFilterTest {
         when(servletResponse.getWriter()).thenReturn(printWriter);
 
         //when
-        preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
+        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
 
         //then
         verify(httpClient).execute(httpGet);

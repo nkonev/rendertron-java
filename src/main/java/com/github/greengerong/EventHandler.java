@@ -2,11 +2,10 @@ package com.github.greengerong;
 
 
 import org.apache.http.HttpResponse;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public interface PreRenderEventHandler {
+public interface EventHandler {
 
     String beforeRender(HttpServletRequest clientRequest);
 

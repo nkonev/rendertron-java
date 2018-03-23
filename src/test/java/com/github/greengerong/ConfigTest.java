@@ -9,13 +9,13 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class PrerenderConfigTest {
+public class ConfigTest {
     @Test(expected = Exception.class)
     public void should_throw_exception_if_invalid_timeout_value_specified() throws Exception {
         //given
         Map<String, String> configuration = new HashMap<String, String>();
         configuration.put("socketTimeout", "not_an_int");
-        PrerenderConfig config = new PrerenderConfig(configuration);
+        Config config = new Config(configuration);
         //when
         config.getHttpClient();
     }
@@ -25,7 +25,7 @@ public class PrerenderConfigTest {
         //given
         Map<String, String> configuration = new HashMap<String, String>();
         configuration.put("socketTimeout", "1000");
-        PrerenderConfig config = new PrerenderConfig(configuration);
+        Config config = new Config(configuration);
         //when
         final CloseableHttpClient httpClient = config.getHttpClient();
 
