@@ -89,34 +89,6 @@ public class SeoFilterTest {
     }
 
     @Test
-    public void should_handle_when_url_with_escaped_fragment_() throws Exception {
-        //given
-        when(filterConfig.getInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL)).thenReturn(DEFAULT_RENDERTRON_URL);
-        seoFilter.init(filterConfig);
-        final CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
-        final StatusLine statusLine = mock(StatusLine.class);
-
-        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
-        when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
-        when(servletRequest.getHeaderNames()).thenReturn(mock(Enumeration.class));
-        when(httpClient.execute(httpGet)).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
-        when(servletRequest.getParameterMap()).thenReturn(map);
-        when(statusLine.getStatusCode()).thenReturn(SC_OK);
-        when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
-        when(servletResponse.getWriter()).thenReturn(printWriter);
-
-        //when
-        seoFilter.doFilter(servletRequest, servletResponse, filterChain);
-
-        //then
-        verify(httpClient).execute(httpGet);
-        verify(filterChain, never()).doFilter(servletRequest, servletResponse);
-    }
-
-    @Test
     public void should_not_handle_when_user_agent_is_not_crawler() throws Exception {
         //given
         seoFilter.init(filterConfig);
@@ -207,7 +179,6 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
@@ -238,7 +209,6 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_NOT_FOUND);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
@@ -276,7 +246,6 @@ public class SeoFilterTest {
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);
@@ -293,7 +262,9 @@ public class SeoFilterTest {
     @Test
     public void should_use_request_url_from_custom_header_if_available() throws Exception {
         //given
-        when(filterConfig.getInitParameter(Constants.InitFilterParams.FORWARDED_URL_HEADER)).thenReturn("X-Forwarded-URL");
+        final String headerName = "X-Forwarded-URL";
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS)).thenReturn("crawler1,crawler2,crawler3");
+        when(filterConfig.getInitParameter(Constants.InitFilterParams.FORWARDED_URL_HEADER)).thenReturn(headerName);
         when(filterConfig.getInitParameter(Constants.InitFilterParams.WHITELIST)).thenReturn("http://my.public.domain.com/");
         when(filterConfig.getInitParameter(Constants.InitFilterParams.BLACKLIST)).thenReturn("http://localhost/test");
         when(filterConfig.getInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL)).thenReturn(DEFAULT_RENDERTRON_URL);
@@ -304,13 +275,13 @@ public class SeoFilterTest {
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
-        when(servletRequest.getHeader("X-Forwarded-URL")).thenReturn("http://my.public.domain.com/");
+        when(servletRequest.getHeader(headerName)).thenReturn("http://my.public.domain.com/");
+        when(servletRequest.getHeader("User-Agent")).thenReturn("crawler3");
 
         when(servletRequest.getHeaderNames()).thenReturn(mock(Enumeration.class));
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         final HashMap<String, String> map = new HashMap<String, String>();
-        map.put(SeoService.ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
         when(httpResponse.getAllHeaders()).thenReturn(new Header[0]);

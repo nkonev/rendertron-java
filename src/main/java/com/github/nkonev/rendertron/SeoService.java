@@ -36,7 +36,6 @@ public class SeoService {
      * approach does case insensitive lookup faster.
      */
     private static final HeaderGroup hopByHopHeaders;
-    public static final String ESCAPED_FRAGMENT_KEY = "_escaped_fragment_";
     private CloseableHttpClient httpClient;
     private Config config;
     private EventHandler eventHandler;
@@ -44,6 +43,7 @@ public class SeoService {
     public SeoService(Map<String, String> config) {
         this.config = new Config(config);
         this.httpClient = getHttpClient();
+        this.eventHandler = this.config.getEventHandler();
     }
 
     static {
@@ -77,7 +77,6 @@ public class SeoService {
     private boolean handleRender(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws URISyntaxException, IOException {
         if (shouldShowRenderedPage(servletRequest)) {
-            this.eventHandler = config.getEventHandler();
             if (beforeRender(servletRequest, servletResponse) || proxyRenderedPageResponse(servletRequest, servletResponse)) {
                 return true;
             }
@@ -112,11 +111,6 @@ public class SeoService {
         if (blacklist != null && isInBlackList(url, referer, blacklist)) {
             log.trace("Blacklist is enabled, and this request is listed; intercept: no");
             return false;
-        }
-
-        if (hasEscapedFragment(request)) {
-            log.trace("Request Has _escaped_fragment_; intercept: yes");
-            return true;
         }
 
         if (StringUtils.isBlank(userAgent)) {
@@ -272,10 +266,6 @@ public class SeoService {
         } catch (IOException e) {
             log.error("Close proxy error", e);
         }
-    }
-
-    private boolean hasEscapedFragment(HttpServletRequest request) {
-        return request.getParameterMap().containsKey(ESCAPED_FRAGMENT_KEY);
     }
 
     private boolean isInBlackList(final String url, final String referer, List<String> blacklist) {
