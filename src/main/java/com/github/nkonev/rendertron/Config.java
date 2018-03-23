@@ -25,10 +25,10 @@ public class Config {
     }
 
     public EventHandler getEventHandler() {
-        final String preRenderEventHandler = config.get(Constants.InitFilterParams.RENDERTRON_EVENT_HANDLER);
-        if (isNotBlank(preRenderEventHandler)) {
+        final String eventHandler = config.get(Constants.InitFilterParams.RENDERTRON_EVENT_HANDLER);
+        if (isNotBlank(eventHandler)) {
             try {
-                return (EventHandler) Class.forName(preRenderEventHandler).newInstance();
+                return (EventHandler) Class.forName(eventHandler).newInstance();
             } catch (Exception e) {
                 log.error("EventHandler class not find or can not new a instance", e);
             }
@@ -69,7 +69,7 @@ public class Config {
         return config.get("socketTimeout");
     }
 
-    public String getPrerenderToken() {
+    public String getToken() {
         return config.get(Constants.InitFilterParams.PRERENDER_TOKEN);
     }
 
@@ -123,12 +123,12 @@ public class Config {
         return null;
     }
 
-    public String getPrerenderServiceUrl() {
-        final String prerenderServiceUrl = config.get(Constants.InitFilterParams.RENDERTRON_SERVICE_URL);
-        if (isBlank(prerenderServiceUrl)){
+    public String getServiceUrl() {
+        final String serviceUrl = config.get(Constants.InitFilterParams.RENDERTRON_SERVICE_URL);
+        if (isBlank(serviceUrl)){
             throw new IllegalArgumentException(Constants.InitFilterParams.RENDERTRON_SERVICE_URL + " cannot be blank");
         }
-        return prerenderServiceUrl;
+        return serviceUrl;
     }
 
     public String getForwardedURLPrefix() {

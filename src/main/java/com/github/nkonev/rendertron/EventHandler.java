@@ -9,7 +9,7 @@ public interface EventHandler {
 
     String beforeRender(HttpServletRequest clientRequest);
 
-    String afterRender(HttpServletRequest clientRequest, HttpServletResponse clientResponse, HttpResponse prerenderResponse, String responseHtml);
+    String afterRender(HttpServletRequest clientRequest, HttpServletResponse clientResponse, HttpResponse renderServiceResponse, String responseHtml);
 
     void destroy();
 }

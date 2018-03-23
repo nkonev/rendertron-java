@@ -63,29 +63,29 @@ public class SeoService {
         closeQuietly(httpClient);
     }
 
-    public boolean prerenderIfEligible(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public boolean renderIfEligible(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         try {
-            if (handlePrerender(servletRequest, servletResponse)) {
+            if (handleRender(servletRequest, servletResponse)) {
                 return true;
             }
         } catch (Exception e) {
-            log.error("Prerender service error", e);
+            log.error("Render service error", e);
         }
         return false;
     }
 
-    private boolean handlePrerender(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
+    private boolean handleRender(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws URISyntaxException, IOException {
-        if (shouldShowPrerenderedPage(servletRequest)) {
+        if (shouldShowRenderedPage(servletRequest)) {
             this.eventHandler = config.getEventHandler();
-            if (beforeRender(servletRequest, servletResponse) || proxyPrerenderedPageResponse(servletRequest, servletResponse)) {
+            if (beforeRender(servletRequest, servletResponse) || proxyRenderedPageResponse(servletRequest, servletResponse)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean shouldShowPrerenderedPage(HttpServletRequest request) throws URISyntaxException {
+    private boolean shouldShowRenderedPage(HttpServletRequest request) throws URISyntaxException {
         final String userAgent = request.getHeader("User-Agent");
         final String url = getRequestURL(request);
         final String referer = request.getHeader("Referer");
@@ -161,7 +161,7 @@ public class SeoService {
                     // rewrite the Host header to ensure that we get content from
                     // the correct virtual server
                     if (headerName.equalsIgnoreCase(HOST)) {
-                        HttpHost host = URIUtils.extractHost(new URI(config.getPrerenderServiceUrl()));
+                        HttpHost host = URIUtils.extractHost(new URI(config.getServiceUrl()));
                         headerValue = host.getHostName();
                         if (host.getPort() != -1) {
                             headerValue += ":" + host.getPort();
@@ -200,11 +200,11 @@ public class SeoService {
     }
 
     private String getApiUrl(String url) {
-        String prerenderServiceUrl = config.getPrerenderServiceUrl();
-        if (!prerenderServiceUrl.endsWith("/")) {
-            prerenderServiceUrl += "/";
+        String renderServiceUrl = config.getServiceUrl();
+        if (!renderServiceUrl.endsWith("/")) {
+            renderServiceUrl += "/";
         }
-        return prerenderServiceUrl + url;
+        return renderServiceUrl + url;
     }
 
     /**
@@ -332,10 +332,10 @@ public class SeoService {
         return false;
     }
 
-    private boolean proxyPrerenderedPageResponse(HttpServletRequest request, HttpServletResponse response)
+    private boolean proxyRenderedPageResponse(HttpServletRequest request, HttpServletResponse response)
             throws IOException, URISyntaxException {
         final String apiUrl = getApiUrl(getFullUrl(request));
-        log.trace(String.format("Prerender proxy will send request to:%s", apiUrl));
+        log.trace(String.format("Render proxy will send request to:%s", apiUrl));
         final HttpGet getMethod = getHttpGet(apiUrl);
         copyRequestHeaders(request, getMethod);
         withPrerenderToken(getMethod);
@@ -362,7 +362,7 @@ public class SeoService {
     }
 
     private void withPrerenderToken(HttpRequest proxyRequest) {
-        final String token = config.getPrerenderToken();
+        final String token = config.getToken();
         //for new version prerender with token.
         if (isNotBlank(token)) {
             proxyRequest.addHeader("X-Prerender-Token", token);

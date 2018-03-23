@@ -6,7 +6,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>prerender-java</name>
+    <name>rendertron-java</name>
     <url>http://maven.apache.org</url>
 
     <parent>
@@ -74,9 +74,9 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <id>bintray-nkonev-m2</id>
+            <id>bintray-nkonev-rendertron-m2</id>
             <name>nkonev-m2</name>
-            <url>https://api.bintray.com/maven/nkonev/m2/prerender;publish=1</url>
+            <url>https://api.bintray.com/maven/nkonev/m2/rendertron;publish=1</url>
         </repository>
     </distributionManagement>
 
