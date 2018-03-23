@@ -1,7 +1,6 @@
 package com.github.greengerong;
 
 
-import com.google.common.collect.Lists;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -11,11 +10,9 @@ import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class PrerenderConfig {
@@ -85,7 +82,7 @@ public class PrerenderConfig {
     }
 
     public List<String> getCrawlerUserAgents() {
-        List<String> crawlerUserAgents = Lists.newArrayList("baiduspider",
+        List<String> crawlerUserAgents = Arrays.asList("baiduspider",
                 "facebookexternalhit", "twitterbot", "rogerbot", "linkedinbot", "embedly", "quora link preview",
                 "showyoubo", "outbrain", "pinterest", "developers.google.com/+/web/snippet", "slackbot", "vkShare",
                 "W3C_Validator", "redditbot", "Applebot", "yandex", "Googlebot");
@@ -98,7 +95,7 @@ public class PrerenderConfig {
     }
 
     public List<String> getExtensionsToIgnore() {
-        List<String> extensionsToIgnore = Lists.newArrayList(".js", ".json", ".css", ".xml", ".less", ".png", ".jpg",
+        List<String> extensionsToIgnore = Arrays.asList(".js", ".json", ".css", ".xml", ".less", ".png", ".jpg",
                 ".jpeg", ".gif", ".pdf", ".doc", ".txt", ".ico", ".rss", ".zip", ".mp3", ".rar", ".exe", ".wmv",
                 ".doc", ".avi", ".ppt", ".mpg", ".mpeg", ".tif", ".wav", ".mov", ".psd", ".ai", ".xls", ".mp4",
                 ".m4a", ".swf", ".dat", ".dmg", ".iso", ".flv", ".m4v", ".torrent", ".woff", ".ttf");

@@ -3,7 +3,7 @@
 
     <groupId>com.github.nkonev</groupId>
     <artifactId>prerender-java</artifactId>
-    <version>1.6.9</version>
+    <version>1.6.10</version>
     <packaging>jar</packaging>
 
     <name>prerender-java</name>
@@ -41,12 +41,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-            <classifier>cdi1.0</classifier>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

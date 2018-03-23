@@ -1,17 +1,16 @@
 package com.github.greengerong;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PreRenderSEOFilter implements Filter {
-    public static final List<String> PARAMETER_NAMES = Lists.newArrayList(
+    public static final List<String> PARAMETER_NAMES = Arrays.asList(
             PreRenderConstants.InitFilterParams.PRE_RENDER_EVENT_HANDLER, PreRenderConstants.InitFilterParams.PROXY,
             PreRenderConstants.InitFilterParams.PROXY_PORT, PreRenderConstants.InitFilterParams.PRERENDER_TOKEN,
             PreRenderConstants.InitFilterParams.FORWARDED_URL_HEADER, PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX_HEADER,
@@ -46,7 +45,7 @@ public class PreRenderSEOFilter implements Filter {
     }
 
     protected Map<String, String> toMap(FilterConfig filterConfig) {
-        Map<String, String> config = Maps.newHashMap();
+        Map<String, String> config = new HashMap<String, String>();
         for (String parameterName : PARAMETER_NAMES) {
             config.put(parameterName, filterConfig.getInitParameter(parameterName));
         }

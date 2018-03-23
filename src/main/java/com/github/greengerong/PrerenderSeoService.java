@@ -1,7 +1,5 @@
 package com.github.greengerong;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,7 +11,6 @@ import org.apache.http.message.HeaderGroup;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Closeable;
@@ -26,8 +23,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import static com.google.common.collect.FluentIterable.from;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.http.HttpHeaders.HOST;
@@ -217,18 +212,15 @@ public class PrerenderSeoService {
      */
     private void copyResponseHeaders(HttpResponse proxyResponse, final HttpServletResponse servletResponse) {
         servletResponse.setCharacterEncoding(getContentCharSet(proxyResponse.getEntity()));
-        from(Arrays.asList(proxyResponse.getAllHeaders())).filter(new Predicate<Header>() {
-            @Override
-            public boolean apply(Header header) {
-                return !hopByHopHeaders.containsHeader(header.getName());
+        for (Header proxyResponseHeader: proxyResponse.getAllHeaders()){
+            if (shouldCopyHeader(proxyResponseHeader)){
+                servletResponse.addHeader(proxyResponseHeader.getName(), proxyResponseHeader.getValue());
             }
-        }).transform(new Function<Header, Boolean>() {
-            @Override
-            public Boolean apply(Header header) {
-                servletResponse.addHeader(header.getName(), header.getValue());
-                return true;
-            }
-        }).toList();
+        }
+    }
+
+    private boolean shouldCopyHeader(Header header) {
+        return !hopByHopHeaders.containsHeader(header.getName());
     }
     
     /**
@@ -287,43 +279,43 @@ public class PrerenderSeoService {
     }
 
     private boolean isInBlackList(final String url, final String referer, List<String> blacklist) {
-        return from(blacklist).anyMatch(new Predicate<String>() {
-            @Override
-            public boolean apply(String regex) {
-                final Pattern pattern = Pattern.compile(regex);
-                return pattern.matcher(url).matches() ||
-                        (!StringUtils.isBlank(referer) && pattern.matcher(referer).matches());
+        for (String regex: blacklist) {
+            final Pattern pattern = Pattern.compile(regex);
+            if (pattern.matcher(url).matches() ||
+                    (!StringUtils.isBlank(referer) && pattern.matcher(referer).matches())){
+                return true;
             }
-        });
+        }
+        return false;
     }
 
     private boolean isInSearchUserAgent(final String userAgent) {
-        return from(prerenderConfig.getCrawlerUserAgents()).anyMatch(new Predicate<String>() {
-            @Override
-            public boolean apply(String item) {
-                return userAgent.toLowerCase().contains(item.toLowerCase());
+        for(String item: prerenderConfig.getCrawlerUserAgents()){
+            if (userAgent.toLowerCase().contains(item.toLowerCase())){
+                return true;
             }
-        });
+        }
+        return false;
     }
 
 
     private boolean isInResources(final String url) {
-        return from(prerenderConfig.getExtensionsToIgnore()).anyMatch(new Predicate<String>() {
-            @Override
-            public boolean apply(String item) {
-                return (url.indexOf('?') >= 0 ? url.substring(0, url.indexOf('?')) : url)
-                        .toLowerCase().endsWith(item);
+        for(String item: prerenderConfig.getExtensionsToIgnore()){
+            if ((url.indexOf('?') >= 0 ? url.substring(0, url.indexOf('?')) : url)
+                    .toLowerCase().endsWith(item)){
+                return true;
             }
-        });
+        }
+        return false;
     }
 
     private boolean isInWhiteList(final String url, List<String> whitelist) {
-        return from(whitelist).anyMatch(new Predicate<String>() {
-            @Override
-            public boolean apply(String regex) {
-                return Pattern.compile(regex).matcher(url).matches();
+        for (String regex: whitelist) {
+            if (Pattern.compile(regex).matcher(url).matches()) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 
     private boolean beforeRender(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -1,6 +1,5 @@
 package com.github.greengerong;
 
-import com.google.common.collect.Maps;
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
-
 import static com.github.greengerong.PrerenderSeoService.ESCAPED_FRAGMENT_KEY;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -100,7 +97,7 @@ public class PreRenderSEOFilterTest {
         when(servletRequest.getHeaderNames()).thenReturn(mock(Enumeration.class));
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        final HashMap<String, String> map = Maps.newHashMap();
+        final HashMap<String, String> map = new HashMap<String, String>();
         map.put(ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
@@ -122,7 +119,7 @@ public class PreRenderSEOFilterTest {
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
-        when(servletRequest.getParameterMap()).thenReturn(Maps.<String, String>newHashMap());
+        when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("no");
         //when
         preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
@@ -140,7 +137,7 @@ public class PreRenderSEOFilterTest {
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test.js"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
-        when(servletRequest.getParameterMap()).thenReturn(Maps.<String, String>newHashMap());
+        when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("crawler1");
         //when
         preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
@@ -159,7 +156,7 @@ public class PreRenderSEOFilterTest {
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
-        when(servletRequest.getParameterMap()).thenReturn(Maps.<String, String>newHashMap());
+        when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("crawler1");
         //when
         preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
@@ -178,7 +175,7 @@ public class PreRenderSEOFilterTest {
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
         when(servletRequest.getMethod()).thenReturn(METHOD_NAME);
-        when(servletRequest.getParameterMap()).thenReturn(Maps.<String, String>newHashMap());
+        when(servletRequest.getParameterMap()).thenReturn(new HashMap<String, String>());
         when(servletRequest.getHeader("User-Agent")).thenReturn("crawler1");
         //when
         preRenderSEOFilter.doFilter(servletRequest, servletResponse, filterChain);
@@ -204,7 +201,7 @@ public class PreRenderSEOFilterTest {
         when(servletRequest.getHeaderNames()).thenReturn(mock(Enumeration.class));
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        final HashMap<String, String> map = Maps.newHashMap();
+        final HashMap<String, String> map = new HashMap<String, String>();
         map.put(ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
@@ -234,7 +231,7 @@ public class PreRenderSEOFilterTest {
         when(servletRequest.getHeaderNames()).thenReturn(mock(Enumeration.class));
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        final HashMap<String, String> map = Maps.newHashMap();
+        final HashMap<String, String> map = new HashMap<String, String>();
         map.put(ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_NOT_FOUND);
@@ -271,7 +268,7 @@ public class PreRenderSEOFilterTest {
         when(servletRequest.getHeaderNames()).thenReturn(mock(Enumeration.class));
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        final HashMap<String, String> map = Maps.newHashMap();
+        final HashMap<String, String> map = new HashMap<String, String>();
         map.put(ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
@@ -305,7 +302,7 @@ public class PreRenderSEOFilterTest {
         when(servletRequest.getHeaderNames()).thenReturn(mock(Enumeration.class));
         when(httpClient.execute(httpGet)).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        final HashMap<String, String> map = Maps.newHashMap();
+        final HashMap<String, String> map = new HashMap<String, String>();
         map.put(ESCAPED_FRAGMENT_KEY, "");
         when(servletRequest.getParameterMap()).thenReturn(map);
         when(statusLine.getStatusCode()).thenReturn(SC_OK);
