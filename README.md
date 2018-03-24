@@ -1,6 +1,8 @@
 Rendertron Java
 ===============
 
+It's fork of [prerender-java](https://github.com/greengerong/prerender-java).
+
 1:Add this line to your web.xml:
 ```xml
 <filter>
