@@ -26,10 +26,8 @@ import static org.apache.http.client.methods.HttpGet.METHOD_NAME;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SeoFilterTestExtended {
+public class SeoFilterArgumentCaptorTest {
 
-
-//    private SeoService seoService;
 
     private SeoFilter seoFilter;
 
