@@ -43,7 +43,7 @@ It's fork of [prerender-java](https://github.com/greengerong/prerender-java).
 ```
 ## How it works
 1. Check to make sure we should show a prerendered page
-	1. Check if the request is from a crawler (`_escaped_fragment_` or agent string)
+	1. Check if the request is from a crawler (useragent string)
 	2. Check to make sure we aren't requesting a resource (js, css, etc...)
 	3. (optional) Check to make sure the url is in the whitelist
 	4. (optional) Check to make sure the url isn't in the blacklist
