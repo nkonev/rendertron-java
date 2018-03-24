@@ -76,7 +76,7 @@
         <repository>
             <id>bintray-nkonev-m2</id>
             <name>nkonev-m2</name>
-            <url>https://api.bintray.com/maven/nkonev/m2/rendertron;publish=1</url>
+            <url>https://api.bintray.com/maven/nkonev/m2/rendertron-java;publish=1</url>
         </repository>
     </distributionManagement>
 
