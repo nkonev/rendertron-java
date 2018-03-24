@@ -172,7 +172,7 @@ public class SeoService {
         if (config.getForwardedURLPrefixHeader() != null) {
             String url = request.getHeader(config.getForwardedURLPrefixHeader());
             if (url != null) {
-                return url + request.getRequestURI();
+                return url + emptyOnNull(request.getRequestURI());
             }
         }
 
@@ -186,11 +186,15 @@ public class SeoService {
         if (config.getForwardedURLPrefix() != null) {
             String url = config.getForwardedURLPrefix();
             if (url != null) {
-                return url + request.getRequestURI();
+                return url + emptyOnNull(request.getRequestURI());
             }
         }
 
         return request.getRequestURL().toString();
+    }
+
+    private String emptyOnNull(String src) {
+        return StringUtils.isBlank(src) ? "" : src;
     }
 
     private String getApiUrl(String url) {

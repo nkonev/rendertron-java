@@ -51,7 +51,7 @@ public class SeoFilterTest {
     @Mock
     private PrintWriter printWriter;
 
-    private static final String DEFAULT_RENDERTRON_URL = "http://example.com:3000/render";
+    public static final String DEFAULT_RENDERTRON_URL = "http://example.com:3000/render";
 
     @Before
     public void setUp() throws Exception {
