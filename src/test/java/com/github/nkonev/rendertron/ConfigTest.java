@@ -14,7 +14,7 @@ public class ConfigTest {
     public void should_throw_exception_if_invalid_timeout_value_specified() throws Exception {
         //given
         Map<String, String> configuration = new HashMap<String, String>();
-        configuration.put("socketTimeout", "not_an_int");
+        configuration.put(Constants.InitFilterParams.SOCKET_TIMEOUT, "not_an_int");
         Config config = new Config(configuration);
         //when
         config.getHttpClient();
@@ -24,7 +24,7 @@ public class ConfigTest {
     public void should_pass_if_correct_timeout_value_specified() throws Exception {
         //given
         Map<String, String> configuration = new HashMap<String, String>();
-        configuration.put("socketTimeout", "1000");
+        configuration.put(Constants.InitFilterParams.SOCKET_TIMEOUT, "1000");
         Config config = new Config(configuration);
         //when
         final CloseableHttpClient httpClient = config.getHttpClient();
